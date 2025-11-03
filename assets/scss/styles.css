@@ -1,3 +1,6 @@
+/* TEST: ta bort sen */
+body { outline: 6px solid hotpink !important; }
+
 /* ===== Monochrome Dark (replace entire styles.css) ===== */
 *{box-sizing:border-box}html,body{height:100%;margin:0}
 :root{
