@@ -1,11 +1,11 @@
-const VERSION = "v1.0.0";
+// Normal SW med network-first för HTML (så ändringar syns direkt)
+const VERSION = "v1.0.10";
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 
+// Cacha statiska assets (inte index.html)
 const PRECACHE_URLS = [
-  "/",
-  "/index.html",
-  "/styles.css",
+  "/styles.css?v=10",
   "/manifest.json"
 ];
 
@@ -27,21 +27,39 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const req = event.request;
-  const url = new URL(req.url);
   if (req.method !== "GET") return;
 
-  // Same-origin: cache-first
-  if (url.origin === self.location.origin) {
+  const url = new URL(req.url);
+  const isHTML = req.destination === "document" || (req.headers.get("accept") || "").includes("text/html");
+  const sameOrigin = url.origin === self.location.origin;
+
+  if (isHTML) {
+    event.respondWith(networkFirst(req));
+    return;
+  }
+  if (sameOrigin) {
     event.respondWith(cacheFirst(req));
     return;
   }
-  // Cross-origin (e.g., images/CDNs): stale-while-revalidate
   event.respondWith(staleWhileRevalidate(req));
 });
 
+async function networkFirst(req) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  try {
+    const fresh = await fetch(req, { cache: "no-store" });
+    cache.put(req, fresh.clone());
+    return fresh;
+  } catch {
+    const cached = await cache.match(req);
+    if (cached) return cached;
+    return new Response("<h1>Offline</h1>", { headers: { "Content-Type": "text/html" } });
+  }
+}
+
 async function cacheFirst(req) {
   const cache = await caches.open(STATIC_CACHE);
-  const cached = await cache.match(req, { ignoreSearch: true });
+  const cached = await cache.match(req);
   if (cached) return cached;
   const res = await fetch(req);
   if (res && res.ok) cache.put(req, res.clone());
@@ -51,8 +69,6 @@ async function cacheFirst(req) {
 async function staleWhileRevalidate(req) {
   const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(req);
-  const network = fetch(req)
-    .then(res => { try { cache.put(req, res.clone()); } catch {} return res; })
-    .catch(() => undefined);
+  const network = fetch(req).then(res => { try { cache.put(req, res.clone()); } catch {} return res; }).catch(() => undefined);
   return cached || network || fetch(req);
 }
