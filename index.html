@@ -1,34 +1,103 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sv">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#4f46e5" />
-  <meta name="description" content="WPK's Homepage - Projects and Schedule" />
+  <meta name="description" content="WPKs hemsida – projekt och schema" />
   <title>WPK's Homepage</title>
 
   <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <link rel="apple-touch-icon" href="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png" />
 
-  <!-- Social -->
-  <meta property="og:title" content="WPK's Homepage" />
-  <meta property="og:description" content="Projects and schedule — hosted on GitHub Pages." />
-  <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://wpk2006.github.io/" />
-  <meta name="twitter:card" content="summary_large_image" />
+  <!-- STYLES – läggs sist så den vinner över allt annat -->
+  <style>
+    /* ===== Bas ===== */
+    *,*::before,*::after{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    :root{
+      --bg:#ffffff; --surface:#f8fafc; --text:#0f172a; --muted:#475569;
+      --accent:#4f46e5; --accent-2:#4338ca; --border:#e5e7eb; --radius:14px;
+      --shadow:0 8px 28px rgba(2,6,23,.08);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0c10; --surface:#111218; --text:#f8fafc; --muted:#cbd5e1;
+        --border:#242634;
+      }
+    }
+    body{
+      font-family: ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg); color: var(--text); line-height: 1.6;
+    }
+    .safe{max-width:1000px;margin:0 auto;padding:0 20px}
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
+    /* ===== Header / Hero ===== */
+    .site-header{
+      padding:72px 0 20px; border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(79,70,229,.10), transparent 70%);
+      text-align:left;
+    }
+    .title{font-size:clamp(32px,5vw,48px); margin:0 0 8px; letter-spacing:-.02em}
+    .title span{color:var(--accent)}
+    .tagline{margin:0 0 18px; color:var(--muted)}
+    .nav{display:flex; gap:12px; flex-wrap:wrap}
+
+    /* ===== Kort ===== */
+    .cards{
+      display:grid; gap:18px; grid-template-columns:1fr; margin:28px 0 12px;
+    }
+    @media (min-width:900px){ .cards{ grid-template-columns: 1fr 1fr } }
+    .card{
+      background:#fff; border:1px solid var(--border); border-radius:var(--radius);
+      padding:18px; box-shadow: var(--shadow);
+    }
+    @media (prefers-color-scheme: dark){
+      .card{ background: var(--surface); }
+    }
+    .card h2{margin:0 0 6px; font-size:20px}
+    .card p{margin:0 0 14px; color:var(--muted)}
+
+    /* ===== CTA ===== */
+    .cta{margin:24px 0 40px}
+    .cta-inner{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+    .cta h3{margin:0}
+
+    /* ===== Footer ===== */
+    .site-footer{border-top:1px solid var(--border); padding:22px 0; color:var(--muted); text-align:center}
+
+    /* ===== Knappar ===== */
+    .btn, button.btn{
+      appearance:none;border:1px solid transparent;cursor:pointer;
+      display:inline-flex;align-items:center;justify-content:center;gap:8px;
+      padding:10px 16px;border-radius:12px;font-weight:700;text-decoration:none;
+      background:var(--accent);color:#fff;box-shadow: var(--shadow);
+      transition: transform .12s ease, background .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px); background:var(--accent-2)}
+    .btn:active{transform:translateY(0)}
+    .btn-ghost{
+      background:#fff; color:var(--text); border-color:var(--border); box-shadow:none;
+    }
+    .btn-ghost:hover{background:var(--surface)}
+    @media (prefers-color-scheme: dark){
+      .btn-ghost{ background:transparent; color:var(--text); }
+      .btn-ghost:hover{ background:#1a1b24; border-color:#1f2430; }
+    }
+
+    /* A2HS-knappen visas först när webbläsaren stödjer prompten */
+    #installBtn{display:none}
+  </style>
 </head>
 <body>
   <header class="site-header">
     <div class="safe">
-      <h1 class="title">Welcome to <span>WPK</span>'s Homepage</h1>
-      <p class="tagline">Projects, schedule & a sprinkle of PWA goodness ✨</p>
+      <h1 class="title">Välkommen till <span>WPK</span>:s hemsida</h1>
+      <p class="tagline">Projekt, schema och PWA-stöd (offline + “Lägg till på hemskärmen”).</p>
       <nav class="nav">
-        <a href="#projects" class="btn">Projects</a>
-        <a href="#schedule" class="btn btn-ghost">Schedule</a>
+        <a href="#projects" class="btn">Projekt</a>
+        <a href="#schedule" class="btn btn-ghost">Schema</a>
       </nav>
     </div>
   </header>
@@ -36,23 +105,23 @@
   <main class="safe">
     <section id="projects" class="cards">
       <article class="card">
-        <h2>WPK's Profile</h2>
-        <p>Check out my repositories, contributions and pinned projects on GitHub.</p>
-        <a class="btn" href="https://github.com/WPK2006" target="_blank" rel="noopener noreferrer">My Profile</a>
+        <h2>WPK:s GitHub-profil</h2>
+        <p>Kolla in repositories, commits och pinned projects.</p>
+        <a class="btn" href="https://github.com/WPK2006" target="_blank" rel="noopener noreferrer">Öppna profil</a>
       </article>
 
       <article id="schedule" class="card">
-        <h2>Schedule</h2>
-        <p>Direct link to my school schedule — open in a new tab.</p>
-        <a class="btn" href="https://tcstenungsund.github.io/schedule/schedule.html?course=frot100tx-25te4i#week-41" target="_blank" rel="noopener noreferrer">Open Schedule</a>
+        <h2>Schema</h2>
+        <p>Direktlänk till skolschemat i ny flik.</p>
+        <a class="btn" href="https://tcstenungsund.github.io/schedule/schedule.html?course=frot100tx-25te4i#week-41" target="_blank" rel="noopener noreferrer">Öppna schema</a>
       </article>
     </section>
 
     <section class="cta card">
       <div class="cta-inner">
-        <h3>Install this site</h3>
-        <p>Add it to your home screen for a faster, app-like experience (works offline).</p>
-        <button id="installBtn" class="btn">Add to Home Screen</button>
+        <h3>Installera sidan</h3>
+        <p>Lägg till på hemskärmen för snabbare, app-lik upplevelse.</p>
+        <button id="installBtn" class="btn">Lägg till på hemskärmen</button>
       </div>
     </section>
   </main>
@@ -63,6 +132,7 @@
     </div>
   </footer>
 
+  <!-- JS -->
   <script>
     // Service Worker (din stil)
     if ('serviceWorker' in navigator) {
