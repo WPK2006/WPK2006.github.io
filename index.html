@@ -1,142 +1,92 @@
-<!doctype html>
-<html lang="sv" class="h-full" data-theme="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>DailyFlow – Vanor & Fokus</title>
-    <meta name="description" content="En snygg, snabb vanetracker byggd för mobil – direkt på webben." />
-    <meta name="theme-color" content="#0B0B10" />
-    <!-- Open Graph (delning) -->
-    <meta property="og:title" content="DailyFlow – Vanor & Fokus" />
-    <meta property="og:description" content="Spåra vanor enkelt. Snygg mobilupplevelse på webben." />
-    <meta property="og:type" content="website" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#4f46e5" />
+  <meta name="description" content="WPK's Homepage - Projects and Schedule" />
+  <title>WPK's Homepage</title>
 
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🔥</text></svg>">
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png" />
 
-    <!-- Tailwind via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              bg: "#0B0B10",
-              card: "#15151A",
-              border: "#2A2A2F"
-            },
-            borderRadius: { '2xl': '1rem' }
-          }
-        }
-      }
-    </script>
+  <!-- Social -->
+  <meta property="og:title" content="WPK's Homepage" />
+  <meta property="og:description" content="Projects and schedule — hosted on GitHub Pages." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://wpk2006.github.io/" />
+  <meta name="twitter:card" content="summary_large_image" />
 
-    <style>
-      html, body { height: 100%; }
-      .safe { max-width: 420px; margin: 0 auto; }
-      .card { background: rgba(21,21,26,.8); border: 1px solid #2A2A2F; border-radius: 16px; }
-      .blurbar { backdrop-filter: saturate(120%) blur(8px); }
-      /* Ljust tema (växlas via data-theme på <html>) */
-      html[data-theme="light"] body { background: #ffffff; color: #111827; }
-      html[data-theme="light"] .card { background: #ffffff; border-color: #e5e7eb; }
-      html[data-theme="light"] .blurbar { backdrop-filter: saturate(120%) blur(8px); background: rgba(255,255,255,.8); }
-    </style>
-  </head>
-  <body class="h-full bg-bg text-white">
-    <div class="safe px-4 pb-28">
-      <!-- Top bar -->
-      <header class="sticky top-0 z-10 -mx-4 mb-4 bg-bg/80 blurbar">
-        <div class="px-4 pt-6">
-          <div class="flex items-center justify-between">
-            <div>
-              <p class="text-sm text-zinc-400" id="weekday">Idag</p>
-              <h1 class="text-2xl font-semibold tracking-tight">Hej, Alex 👋</h1>
-            </div>
-            <div class="flex items-center gap-2">
-              <button class="p-2 rounded-2xl hover:bg-white/5" aria-label="Påminnelser">
-                <i data-lucide="bell" class="w-5 h-5" aria-hidden="true"></i>
-              </button>
-              <button id="themeToggle" class="p-2 rounded-2xl hover:bg-white/5" aria-label="Växla tema">
-                <i data-lucide="sun" class="w-5 h-5" aria-hidden="true"></i>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <!-- Progress card -->
-      <section class="mb-4">
-        <div class="card">
-          <div class="p-4 pb-2 flex items-center justify-between">
-            <h2 class="text-lg font-medium">Din vecka</h2>
-            <span class="inline-flex items-center gap-1 text-sm text-zinc-200 bg-zinc-800/60 px-2.5 py-1 rounded-xl">
-              Streak <span class="inline-block"><i data-lucide="flame" class="w-4 h-4" aria-hidden="true"></i></span>
-              <strong id="streak" class="ml-0.5">7</strong>
-            </span>
-          </div>
-          <div class="p-4 pt-0">
-            <canvas id="weekChart" height="120"></canvas>
-            <p class="mt-3 text-sm text-zinc-400">Du ligger över din 4-veckorssnitt. Snyggt jobbat!</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Quick add -->
-      <section class="mb-4">
-        <div class="flex gap-2">
-          <input id="newHabit" class="flex-1 card px-3 py-2 outline-none" placeholder="Lägg till vana (t.ex. Stretch 5 min)" />
-          <button id="addBtn" class="px-3 py-2 rounded-2xl bg-indigo-600 hover:bg-indigo-500">Lägg till</button>
-        </div>
-      </section>
-
-      <!-- Tabs -->
-      <section class="mb-3">
-        <div class="grid grid-cols-2 gap-2" role="tablist" aria-label="Visning">
-          <button data-tab="today" class="tab-btn card py-2 text-center" role="tab" aria-selected="true">Idag</button>
-          <button data-tab="all" class="tab-btn card py-2 text-center text-zinc-300" role="tab" aria-selected="false">Alla vanor</button>
-        </div>
-
-        <div id="tab-today" class="mt-3 space-y-3"></div>
-
-        <div id="tab-all" class="mt-3 hidden">
-          <div class="card p-4">
-            <ul id="allList" class="space-y-3"></ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- Nudge -->
-      <section>
-        <div class="card p-4 flex items-start justify-between">
-          <div>
-            <p class="text-sm text-zinc-300">På bana i <span id="streak2">7</span> dagar i rad</p>
-            <p class="text-xs text-zinc-400">Schemalägg en påminnelse för att hålla streaken vid liv.</p>
-          </div>
-          <button class="px-3 py-2 rounded-xl border border-zinc-700">Aktivera</button>
-        </div>
-      </section>
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="safe">
+      <h1 class="title">Welcome to <span>WPK</span>'s Homepage</h1>
+      <p class="tagline">Projects, schedule & a sprinkle of PWA goodness ✨</p>
+      <nav class="nav">
+        <a href="#projects" class="btn">Projects</a>
+        <a href="#schedule" class="btn btn-ghost">Schedule</a>
+      </nav>
     </div>
+  </header>
 
-    <!-- Bottom nav -->
-    <nav class="fixed inset-x-0 bottom-0 z-20 safe border-t border-[#2A2A2F] bg-bg/80 blurbar">
-      <div class="grid grid-cols-3 text-center">
-        <button class="py-3 text-xs text-white flex flex-col items-center gap-1">
-          <i data-lucide="list-checks" class="w-5 h-5" aria-hidden="true"></i>
-          Uppgifter
-        </button>
-        <button class="py-3 text-xs text-zinc-400 flex flex-col items-center gap-1">
-          <i data-lucide="bar-chart-2" class="w-5 h-5" aria-hidden="true"></i>
-          Översikt
-        </button>
-        <button class="py-3 text-xs text-zinc-400 flex flex-col items-center gap-1">
-          <i data-lucide="user" class="w-5 h-5" aria-hidden="true"></i>
-          Profil
-        </button>
+  <main class="safe">
+    <section id="projects" class="cards">
+      <article class="card">
+        <h2>WPK's Profile</h2>
+        <p>Check out my repositories, contributions and pinned projects on GitHub.</p>
+        <a class="btn" href="https://github.com/WPK2006" target="_blank" rel="noopener noreferrer">My Profile</a>
+      </article>
+
+      <article id="schedule" class="card">
+        <h2>Schedule</h2>
+        <p>Direct link to my school schedule — open in a new tab.</p>
+        <a class="btn" href="https://tcstenungsund.github.io/schedule/schedule.html?course=frot100tx-25te4i#week-41" target="_blank" rel="noopener noreferrer">Open Schedule</a>
+      </article>
+    </section>
+
+    <section class="cta card">
+      <div class="cta-inner">
+        <h3>Install this site</h3>
+        <p>Add it to your home screen for a faster, app-like experience (works offline).</p>
+        <button id="installBtn" class="btn">Add to Home Screen</button>
       </div>
-    </nav>
+    </section>
+  </main>
 
-    <!-- Externa script (defer för snabbare laddning) -->
-    <script src="https://unpkg.com/lucide@latest" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
-    <script src="./assets/app.js" defer></script>
-  </body>
+  <footer class="site-footer">
+    <div class="safe">
+      <p>© 2025 WPK2006 — Hosted on GitHub Pages</p>
+    </div>
+  </footer>
+
+  <script>
+    // Service Worker (din stil)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(reg => console.log('✅ Service worker registered:', reg.scope))
+        .catch(err => console.error('❌ Service worker registration failed:', err));
+    }
+
+    // A2HS (Add to Home Screen)
+    let deferredPrompt;
+    const installBtn = document.getElementById('installBtn');
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = 'inline-flex';
+    });
+    installBtn?.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log('A2HS outcome:', outcome);
+      deferredPrompt = null;
+      installBtn.style.display = 'none';
+    });
+  </script>
+</body>
 </html>
