@@ -1,83 +1,73 @@
-/* Base reset-ish */
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; }
-:root {
-  --bg: #0b0c10;
-  --bg-soft: #111218;
-  --text: #f8fafc;
-  --muted: #cbd5e1;
-  --primary: #4f46e5;
-  --primary-2: #6366f1;
-  --border: #242634;
-  --shadow: 0 10px 30px rgba(0,0,0,.35);
+/* ---- Bas ---- */
+*{box-sizing:border-box}html,body{height:100%;margin:0}
+:root{
+  --bg:#0b0c10; --bg-soft:#111218; --text:#f8fafc; --muted:#cbd5e1;
+  --primary:#4f46e5; --primary-2:#6366f1; --border:#242634;
+  --shadow:0 12px 40px rgba(0,0,0,.35); --radius:16px;
 }
-@media (prefers-color-scheme: light) {
-  :root {
-    --bg: #ffffff;
-    --bg-soft: #f8fafc;
-    --text: #0f172a;
-    --muted: #475569;
-    --border: #e2e8f0;
-  }
+@media (prefers-color-scheme:light){
+  :root{--bg:#ffffff; --bg-soft:#f8fafc; --text:#0f172a; --muted:#475569; --border:#e2e8f0}
+}
+body{
+  font-family:ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial,Apple Color Emoji,Segoe UI Emoji;
+  background:
+    radial-gradient(1200px 800px at 10% -10%, rgba(79,70,229,.25), transparent 60%),
+    radial-gradient(900px 600px at 110% 10%, rgba(99,102,241,.25), transparent 60%),
+    var(--bg);
+  color:var(--text); line-height:1.6;
 }
 
-body {
-  font-family: ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol;
-  background: radial-gradient(1200px 800px at 10% -10%, rgba(79,70,229,.25), transparent 60%),
-              radial-gradient(900px 600px at 110% 10%, rgba(99,102,241,.25), transparent 60%),
-              var(--bg);
-  color: var(--text);
-  line-height: 1.6;
+/* ---- Layout ---- */
+.safe{max-width:980px;margin:0 auto;padding:0 20px}
+.site-header{
+  padding:72px 0 24px; border-bottom:1px solid var(--border);
+  background:linear-gradient(180deg, rgba(79,70,229,.14), transparent 70%);
+  text-align:center;
+}
+.title{font-size:clamp(30px,5vw,46px); margin:0 0 10px; letter-spacing:-.02em}
+.title span{color:var(--primary)}
+.tagline{margin:0 auto 18px; color:var(--muted); max-width:720px}
+.nav{display:flex; gap:12px; justify-content:center}
+
+/* Korten under hero, centrerat; 1 kolumn → 2 på större skärmar */
+.cards{
+  display:grid; gap:18px; grid-template-columns:1fr; margin:32px 0 10px;
+}
+@media (min-width:900px){
+  .cards{grid-template-columns:1fr 1fr}
 }
 
-.safe { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+/* ---- Kort ---- */
+.card{
+  background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.02));
+  border:1px solid var(--border); border-radius:var(--radius);
+  padding:18px; box-shadow:var(--shadow)
+}
+.card h2{margin:0 0 6px; font-size:20px}
+.card p{margin:0 0 14px; color:var(--muted)}
 
-.site-header {
-  position: relative;
-  padding: 64px 0 24px;
-  background: linear-gradient(180deg, rgba(79,70,229,.14), transparent 60%);
-  border-bottom: 1px solid var(--border);
-}
-.title {
-  font-size: clamp(28px, 5vw, 44px);
-  margin: 0 0 8px;
-  letter-spacing: -0.02em;
-}
-.title span { color: var(--primary); }
-.tagline { margin: 0 0 16px; color: var(--muted); }
+/* ---- CTA-sektion ---- */
+.cta{margin:24px 0 40px}
+.cta-inner{display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between}
+.cta h3{margin:0}
 
-.nav { display: flex; gap: 12px; }
-.btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  gap: 8px; padding: 10px 14px; border-radius: 12px;
-  background: var(--primary); color: white; border: 1px solid transparent;
-  text-decoration: none; font-weight: 600; box-shadow: var(--shadow);
-  transition: transform .12s ease, box-shadow .12s ease, background .12s ease;
-}
-.btn:hover { transform: translateY(-1px); background: var(--primary-2); }
-.btn:active { transform: translateY(0); }
-.btn-ghost {
-  background: transparent; color: var(--text); border: 1px solid var(--border); box-shadow: none;
-}
-.btn-ghost:hover { background: rgba(255,255,255,.05); }
+/* ---- Footer ---- */
+.site-footer{border-top:1px solid var(--border); padding:22px 0; color:var(--muted); text-align:center}
 
-.cards {
-  display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  margin: 28px 0;
+/* ---- Knappar ---- */
+.btn, button.btn{
+  appearance:none; border:none; cursor:pointer;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  padding:10px 14px; border-radius:12px; font-weight:700; text-decoration:none;
+  background:var(--primary); color:#fff; box-shadow:var(--shadow);
+  transition:transform .12s ease, background .12s ease, box-shadow .12s ease;
 }
-.card {
-  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(0,0,0,.02));
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: var(--shadow);
+.btn:hover{transform:translateY(-1px); background:var(--primary-2)}
+.btn:active{transform:translateY(0)}
+.btn-ghost{
+  background:transparent; color:var(--text); border:1px solid var(--border); box-shadow:none
 }
-.card h2 { margin: 0 0 6px; font-size: 20px; }
-.card p { margin: 0 0 14px; color: var(--muted); }
+.btn-ghost:hover{background:rgba(255,255,255,.06)}
 
-.cta { margin: 24px 0 40px; }
-.cta-inner { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
-.cta h3 { margin: 0; }
-#installBtn { display: none; }
-
-.site-footer { border-top: 1px solid var(--border); padding: 20px 0; color: var(--muted); }
+/* ---- A2HS-knappen döljs tills den går att installera ---- */
+#installBtn{display:none}
