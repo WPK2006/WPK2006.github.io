@@ -1,85 +1,117 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="theme-color" content="#4f46e5" />
-  <meta name="description" content="WPKs hemsida – projekt och schema" />
-  <title>WPK's Homepage</title>
+  <meta name="color-scheme" content="light dark" />
+  <title>WPK – Hemsida</title>
+  <meta name="description" content="WPK:s hemsida – projekt och schema." />
 
-  <!-- PWA -->
-  <link rel="manifest" href="manifest.json" />
-  <link rel="apple-touch-icon" href="https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png" />
+  <!-- Inbyggd CSS (neutral, utan gradient) -->
+  <style>
+    /* Reset & tokens */
+    *,*::before,*::after{box-sizing:border-box} html,body{height:100%;margin:0}
+    :root{
+      --bg:#ffffff; --text:#0f172a; --muted:#475569;
+      --surface:#f8fafc; --border:#e5e7eb;
+      --accent:#2563eb; --accent-2:#1d4ed8;
+      --radius:14px; --shadow:0 8px 28px rgba(2,6,23,.08);
+    }
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg:#0b0c10; --text:#f8fafc; --muted:#cbd5e1;
+        --surface:#111218; --border:#242634;
+      }
+    }
+    body{
+      font-family:ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial;
+      background:var(--bg); color:var(--text); line-height:1.6;
+    }
+    .safe{max-width:960px; margin:0 auto; padding:0 20px}
 
-  <!-- Din CSS sist (cache-bust med ?v=10) -->
-  <link rel="stylesheet" href="styles.css?v=13" />
+    /* Header (ren, vänsterställd) */
+    header{border-bottom:1px solid var(--border); background:var(--bg)}
+    .hero{padding:64px 0 20px}
+    .title{font-size:clamp(32px,5vw,46px); margin:0 0 10px; letter-spacing:-.02em}
+    .title span{color:var(--accent)}
+    .tagline{margin:0; color:var(--muted)}
+    .nav{display:flex; gap:12px; margin-top:16px}
+
+    /* Cards */
+    .grid{display:grid; gap:18px; grid-template-columns:1fr; margin:28px 0}
+    @media (min-width:900px){ .grid{ grid-template-columns:1fr 1fr } }
+    .card{
+      background:var(--surface); border:1px solid var(--border);
+      border-radius:var(--radius); padding:18px; box-shadow:var(--shadow)
+    }
+    .card h2{margin:0 0 6px; font-size:20px}
+    .card p{margin:0 0 14px; color:var(--muted)}
+
+    /* Footer */
+    footer{border-top:1px solid var(--border); padding:22px 0; color:var(--muted); text-align:center}
+
+    /* Buttons */
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      padding:10px 16px; border-radius:12px; font-weight:700; text-decoration:none;
+      background:var(--accent); color:#fff; border:1px solid transparent;
+      transition:transform .12s ease, background .12s ease;
+    }
+    .btn:hover{transform:translateY(-1px); background:var(--accent-2)}
+    .btn-ghost{
+      background:#fff; color:var(--text); border:1px solid var(--border);
+    }
+    @media (prefers-color-scheme: dark){ .btn-ghost{ background:transparent } }
+  </style>
 </head>
 <body>
-  <header class="site-header">
-    <div class="safe">
+  <header>
+    <div class="safe hero">
       <h1 class="title">Välkommen till <span>WPK</span>:s hemsida</h1>
-      <p class="tagline">Projekt, schema och PWA-stöd (offline + “Lägg till på hemskärmen”).</p>
-      <nav class="nav">
-        <a href="#projects" class="btn">Projekt</a>
-        <a href="#schedule" class="btn btn-ghost">Schema</a>
-      </nav>
+      <p class="tagline">Projekt och schema – snabbt och enkelt.</p>
+      <div class="nav">
+        <a class="btn" href="#projekt">Projekt</a>
+        <a class="btn btn-ghost" href="#schema">Schema</a>
+      </div>
     </div>
   </header>
 
   <main class="safe">
-    <section id="projects" class="cards">
+    <section id="projekt" class="grid">
       <article class="card">
         <h2>WPK:s GitHub-profil</h2>
         <p>Kolla in repositories, commits och pinned projects.</p>
         <a class="btn" href="https://github.com/WPK2006" target="_blank" rel="noopener noreferrer">Öppna profil</a>
       </article>
 
-      <article id="schedule" class="card">
+      <article id="schema" class="card">
         <h2>Schema</h2>
         <p>Direktlänk till skolschemat i ny flik.</p>
         <a class="btn" href="https://tcstenungsund.github.io/schedule/schedule.html?course=frot100tx-25te4i#week-41" target="_blank" rel="noopener noreferrer">Öppna schema</a>
       </article>
     </section>
-
-    <section class="cta card">
-      <div class="cta-inner">
-        <h3>Installera sidan</h3>
-        <p>Lägg till på hemskärmen för en snabb, app-lik upplevelse (fungerar offline).</p>
-        <button id="installBtn" class="btn">Lägg till på hemskärmen</button>
-      </div>
-    </section>
   </main>
 
-  <footer class="site-footer">
-    <div class="safe">
-      <p>© 2025 WPK2006 — Hosted on GitHub Pages</p>
-    </div>
+  <footer>
+    <div class="safe">© 2025 WPK2006 — Hosted on GitHub Pages</div>
   </footer>
 
+  <!-- JS: Unregistera ALLA gamla service workers + rensa cache, så du ser denna layout -->
   <script>
-    // Service Worker
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('service-worker.js')
-        .then(reg => console.log('✅ SW registered:', reg.scope))
-        .catch(err => console.error('❌ SW registration failed:', err));
-    }
-
-    // A2HS (Add to Home Screen)
-    let deferredPrompt;
-    const installBtn = document.getElementById('installBtn');
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      installBtn.style.display = 'inline-flex';
-    });
-    installBtn?.addEventListener('click', async () => {
-      if (!deferredPrompt) return;
-      deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      console.log('A2HS outcome:', outcome);
-      deferredPrompt = null;
-      installBtn.style.display = 'none';
-    });
+    (async () => {
+      try {
+        // rensa caches
+        if (window.caches) {
+          const ks = await caches.keys();
+          await Promise.all(ks.map(k => caches.delete(k)));
+        }
+        // unregistera SWs (om någon ligger kvar från tidigare)
+        if ('serviceWorker' in navigator) {
+          const regs = await navigator.serviceWorker.getRegistrations();
+          for (const r of regs) { await r.unregister(); }
+        }
+      } catch (e) { console.warn('SW/Cache reset misslyckades:', e); }
+    })();
   </script>
 </body>
 </html>
