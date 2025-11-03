@@ -1,67 +1,58 @@
-// service-worker.js
-const BASE_PATH = "./";
-const CACHE_NAME = "wpk-cache-v1";
-const ASSETS = [
-  `${BASE_PATH}`,
-  `${BASE_PATH}index.html`,
-  `${BASE_PATH}manifest.json`,
-  `${BASE_PATH}styles.css`
+const VERSION = "v1.0.0";
+const STATIC_CACHE = `static-${VERSION}`;
+const RUNTIME_CACHE = `runtime-${VERSION}`;
+
+const PRECACHE_URLS = [
+  "/",
+  "/index.html",
+  "/styles.css",
+  "/manifest.json"
 ];
 
 self.addEventListener("install", (event) => {
-  console.log("[ServiceWorker] Installing...");
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      console.log("[ServiceWorker] Caching core assets");
-      return cache.addAll(ASSETS);
-    })
-  );
-  self.skipWaiting();
+  event.waitUntil((async () => {
+    const cache = await caches.open(STATIC_CACHE);
+    await cache.addAll(PRECACHE_URLS);
+    self.skipWaiting();
+  })());
 });
 
 self.addEventListener("activate", (event) => {
-  console.log("[ServiceWorker] Activating...");
-  event.waitUntil(
-    caches.keys().then((keys) =>
-      Promise.all(
-        keys.map((key) => {
-          if (key !== CACHE_NAME) {
-            console.log("[ServiceWorker] Removing old cache:", key);
-            return caches.delete(key);
-          }
-        })
-      )
-    )
-  );
-  self.clients.claim();
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => ![STATIC_CACHE, RUNTIME_CACHE].includes(k)).map(k => caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener("fetch", (event) => {
-  if (!event.request.url.startsWith(self.location.origin)) return;
+  const req = event.request;
+  const url = new URL(req.url);
+  if (req.method !== "GET") return;
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        const clone = response.clone();
-        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
-        return response;
-      })
-      .catch(() => caches.match(event.request))
-  );
+  // Same-origin: cache-first
+  if (url.origin === self.location.origin) {
+    event.respondWith(cacheFirst(req));
+    return;
+  }
+  // Cross-origin (e.g., images/CDNs): stale-while-revalidate
+  event.respondWith(staleWhileRevalidate(req));
 });
 
-self.addEventListener("push", (event) => {
-  const data = event.data ? event.data.json() : {};
-  const title = data.title || "New Notification";
-  const options = {
-    body: data.body || "You have a new message!",
-    icon: "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png",
-    badge: "https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png"
-  };
-  event.waitUntil(self.registration.showNotification(title, options));
-});
+async function cacheFirst(req) {
+  const cache = await caches.open(STATIC_CACHE);
+  const cached = await cache.match(req, { ignoreSearch: true });
+  if (cached) return cached;
+  const res = await fetch(req);
+  if (res && res.ok) cache.put(req, res.clone());
+  return res;
+}
 
-self.addEventListener("notificationclick", (event) => {
-  event.notification.close();
-  event.waitUntil(clients.openWindow(BASE_PATH));
-});
+async function staleWhileRevalidate(req) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await cache.match(req);
+  const network = fetch(req)
+    .then(res => { try { cache.put(req, res.clone()); } catch {} return res; })
+    .catch(() => undefined);
+  return cached || network || fetch(req);
+}
