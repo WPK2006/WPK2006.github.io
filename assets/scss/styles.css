@@ -64,3 +64,8 @@ body{
 
 /* A2HS-knappen visas först när prompten finns */
 #installBtn{display:none}
+/* Dölj knapparna i headern */
+.nav { display: none !important; }
+
+/* Lite extra luft så headern ser bra ut utan knappar */
+.hero { padding-bottom: 36px; }
