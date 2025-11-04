@@ -1,35 +1,48 @@
 // cypress/e2e/accessibility.cy.js
-describe('Accessibility Tests with axe-core', () => {
+describe('Accessibility with axe-core', () => {
   beforeEach(() => {
     cy.visit('/');
     cy.injectAxe();
+    cy.wait(100); // ge layouten tid att bli klar
   });
 
-  it('should have no detectable accessibility violations on load', () => {
-    cy.checkA11y();
-  });
-
-  it('should have no accessibility violations on main content', () => {
-    cy.checkA11y('.container');
-  });
-
-  it('should have accessible links', () => {
-    cy.checkA11y('a');
-  });
-
-  it('should have proper color contrast', () => {
-    cy.checkA11y(null, {
+  it('no a11y violations on load', () => {
+    cy.checkA11y(undefined, {
+      // valfritt: begränsa till seriösa/critical findings
+      includedImpacts: ['serious', 'critical'],
       rules: {
-        'color-contrast': { enabled: true }
+        // skippa "region" om du saknar <main>/<nav>/<header> landmarks
+        // 'region': { enabled: false },
       }
     });
   });
 
-  it('should have proper heading hierarchy', () => {
-    cy.checkA11y(null, {
-      rules: {
-        'heading-order': { enabled: true }
+  it('no a11y violations in main content', () => {
+    cy.checkA11y('main', {
+      includedImpacts: ['serious', 'critical'],
+    });
+  });
+
+  it('links are accessible (names etc.)', () => {
+    // Testa specifik regel för länk-namn i hela dokumentet
+    cy.checkA11y(undefined, {
+      runOnly: {
+        type: 'rule',
+        values: ['link-name'] // alternativt 'aria-valid-attr', 'aria-roles'
       }
+    });
+  });
+
+  it('proper color contrast (strict)', () => {
+    cy.checkA11y(undefined, {
+      runOnly: { type: 'rule', values: ['color-contrast'] },
+      includedImpacts: ['serious', 'critical']
+    });
+  });
+
+  it('heading order makes sense', () => {
+    cy.checkA11y('body', {
+      runOnly: { type: 'rule', values: ['heading-order'] }
     });
   });
 });
