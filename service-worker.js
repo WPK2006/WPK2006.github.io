@@ -1,18 +1,19 @@
-// service-worker.js — NORMAL (HTML = network-first)
-const VERSION = "v1.0.13";
+// HTML = network-first (så ändringar syns). Assets = cache-first (offline).
+const VERSION = "pwa-1.0.0";
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
-const PRECACHE_URLS = [ "/styles.css?v=13", "/manifest.json" ];
 
-self.addEventListener("install", e => {
+const PRECACHE = [ "/manifest.json", "/icon-192.png", "/icon-512.png" ];
+
+self.addEventListener("install", (e) => {
   e.waitUntil((async () => {
-    const cache = await caches.open(STATIC_CACHE);
-    await cache.addAll(PRECACHE_URLS);
+    const c = await caches.open(STATIC_CACHE);
+    await c.addAll(PRECACHE);
     self.skipWaiting();
   })());
 });
 
-self.addEventListener("activate", e => {
+self.addEventListener("activate", (e) => {
   e.waitUntil((async () => {
     const keys = await caches.keys();
     await Promise.all(keys.filter(k => ![STATIC_CACHE, RUNTIME_CACHE].includes(k)).map(k => caches.delete(k)));
@@ -20,14 +21,14 @@ self.addEventListener("activate", e => {
   })());
 });
 
-self.addEventListener("fetch", e => {
+self.addEventListener("fetch", (e) => {
   const req = e.request;
   if (req.method !== "GET") return;
   const url = new URL(req.url);
   const isHTML = req.destination === "document" || (req.headers.get("accept")||"").includes("text/html");
   const sameOrigin = url.origin === self.location.origin;
 
-  if (isHTML) { e.respondWith(networkFirst(req)); return; }  // ← viktig
+  if (isHTML) { e.respondWith(networkFirst(req)); return; }
   if (sameOrigin) { e.respondWith(cacheFirst(req)); return; }
   e.respondWith(staleWhileRevalidate(req));
 });
@@ -41,7 +42,7 @@ async function networkFirst(req){
   }catch{
     const cached = await cache.match(req);
     if (cached) return cached;
-    return new Response("<h1>Offline</h1>", { headers: { "Content-Type": "text/html" } });
+    return new Response("<h1>Offline</h1><p>Försök igen senare.</p>", { headers: { "Content-Type": "text/html" } });
   }
 }
 async function cacheFirst(req){
