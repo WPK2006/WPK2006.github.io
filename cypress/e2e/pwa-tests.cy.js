@@ -7,5 +7,5 @@ it('has no accessibility violations', () => {
 
 it('displays homepage content', () => {
   cy.visit('/');
-  cy.contains("Welcome to WPK's Homepage").should('be.visible');
+  cy.contains("Välkommen till WPK:s hemsida").should('be.visible');
 });
