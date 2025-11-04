@@ -1,48 +1,31 @@
-// cypress/e2e/accessibility.cy.js
 describe('Accessibility with axe-core', () => {
   beforeEach(() => {
     cy.visit('/');
+    cy.document().its('readyState').should('eq', 'complete');
     cy.injectAxe();
-    cy.wait(100); // ge layouten tid att bli klar
+    cy.wait(100); // ge layout/typsnitt tid
   });
 
-  it('no a11y violations on load', () => {
-    cy.checkA11y(undefined, {
-      // valfritt: begränsa till seriösa/critical findings
-      includedImpacts: ['serious', 'critical'],
-      rules: {
-        // skippa "region" om du saknar <main>/<nav>/<header> landmarks
-        // 'region': { enabled: false },
-      }
+  it('no serious/critical a11y issues on load', () => {
+    cy.checkA11y(undefined, { includedImpacts: ['serious', 'critical'] });
+  });
+
+  it('no a11y issues in <main>', () => {
+    // Säkerställ att <main> finns innan vi kör axe på den
+    cy.get('main').then(($main) => {
+      cy.checkA11y($main, { includedImpacts: ['serious', 'critical'] });
     });
   });
 
-  it('no a11y violations in main content', () => {
-    cy.checkA11y('main', {
-      includedImpacts: ['serious', 'critical'],
-    });
+  it('links have accessible names', () => {
+    cy.checkA11y(undefined, { runOnly: { type: 'rule', values: ['link-name'] } });
   });
 
-  it('links are accessible (names etc.)', () => {
-    // Testa specifik regel för länk-namn i hela dokumentet
-    cy.checkA11y(undefined, {
-      runOnly: {
-        type: 'rule',
-        values: ['link-name'] // alternativt 'aria-valid-attr', 'aria-roles'
-      }
-    });
-  });
-
-  it('proper color contrast (strict)', () => {
-    cy.checkA11y(undefined, {
-      runOnly: { type: 'rule', values: ['color-contrast'] },
-      includedImpacts: ['serious', 'critical']
-    });
+  it('proper color contrast', () => {
+    cy.checkA11y(undefined, { runOnly: { type: 'rule', values: ['color-contrast'] } });
   });
 
   it('heading order makes sense', () => {
-    cy.checkA11y('body', {
-      runOnly: { type: 'rule', values: ['heading-order'] }
-    });
+    cy.checkA11y('body', { runOnly: { type: 'rule', values: ['heading-order'] } });
   });
 });
