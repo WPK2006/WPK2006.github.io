@@ -1,15 +1,14 @@
+// cypress.config.js  (CommonJS)
 const { defineConfig } = require('cypress');
 
 module.exports = defineConfig({
   e2e: {
+    // Kör lokalt: byt till din dev-server, t.ex. Vite:
+    // baseUrl: 'http://localhost:5173',
+    // Eller kör mot din live-sida:
     baseUrl: 'https://wpk2006.github.io',
-    viewportWidth: 1280,
-    viewportHeight: 720,
-    setupNodeEvents(on, config) {
-      export default {
-  e2e: { baseUrl: 'http://localhost:5173' }
-}
 
-    },
-  },
+    supportFile: 'cypress/support/e2e.js',
+    video: false
+  }
 });
