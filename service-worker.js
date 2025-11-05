@@ -3,7 +3,7 @@ const VERSION = "pwa-1.0.3";              // <-- bumpa versionen!
 const STATIC_CACHE = `static-${VERSION}`;
 const RUNTIME_CACHE = `runtime-${VERSION}`;
 
-const PRECACHE = [ "/manifest.json", "/icon-192.png", "/icon-512.png" ];
+const PRECACHE = [ "/manifest.json", "/https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png", "/https://user-gen-media-assets.s3.amazonaws.com/seedream_images/699824cc-3806-47bf-8487-666796a0c2f7.png" ];
 
 self.addEventListener("install", (event) => {
   event.waitUntil((async () => {
