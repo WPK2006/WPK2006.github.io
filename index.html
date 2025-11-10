@@ -1,27 +1,33 @@
 <!DOCTYPE html>
+
 <html lang="sv">
-  <head>
-    <meta charset="utf-8" />
+<head>
+  <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#2563eb" />
   <title>WPK – Hemsida</title>
-    
   <meta name="description" content="WPK:s hemsida – projekt och schema." />
-  <!-- PWA: manifest + iOS-ikon (måste finnas i rotmappen) -->
+
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" href="/icon-192.png">
-
+  
   <style>
+
     *,*::before,*::after{box-sizing:border-box} html,body{height:100%;margin:0}
     :root{
       --bg:#ffffff; --text:#0f172a; --muted:#475569;
       --surface:#f8fafc; --border:#e5e7eb;
-      --accent:#2563eb; --accent-2:#1d4ed8; --radius:14px; --shadow:0 8px 28px rgba(2,6,23,.08)
+      --accent:#2563eb; --accent-2:#1d4ed8;
+      --radius:14px; --shadow:0 8px 28px rgba(2,6,23,.08)
+
     }
+
     @media (prefers-color-scheme: dark){
       :root{ --bg:#0b0c10; --text:#f8fafc; --muted:#cbd5e1; --surface:#111218; --border:#242634 }
+
     }
+
     body{ font-family:ui-sans-serif,-apple-system,Segoe UI,Roboto,Helvetica,Arial; background:var(--bg); color:var(--text); line-height:1.6 }
     .safe{ max-width:960px; margin:0 auto; padding:0 20px }
     header{ border-bottom:1px solid var(--border); background:var(--bg) }
@@ -40,20 +46,13 @@
     #installBtn{ display:none }
   </style>
 </head>
-<body><head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <link rel="stylesheet" href="styles.css" />
-    <title>Min räknare</title>
-  </head>
-  <body class="hero">
+<body>
   <header>
     <div class="safe hero">
       <h1 class="title">Välkommen till <span>WPK</span>:s hemsida</h1>
       <p class="tagline">Projekt och schema – snabbt och enkelt.</p>
     </div>
   </header>
-
   <main class="safe">
     <section id="projekt" class="grid">
       <article class="card">
@@ -61,29 +60,24 @@
         <p>Kolla in repositories, commits och pinned projects.</p>
         <a class="btn" href="https://github.com/WPK2006" target="_blank" rel="noopener">Öppna profil</a>
       </article>
-
       <article id="schema" class="card">
         <h2>Schema</h2>
         <p>Direktlänk till skolschemat i ny flik.</p>
         <a class="btn" href="https://tcstenungsund.github.io/schedule/schedule.html?course=frot100tx-25te4i#week-41" target="_blank" rel="noopener">Öppna schema</a>
       </article>
     </section>
-
   <section id="Spela" class="card" style="text-align:center">
     <h3>Spela luffarschack</h3>
     <p>Mitt egna spel</p>
     <a class="btn" href="https://wpk2006.github.io/spelet/lf.html" target="_blank" rel="noopener">Öppna spelet</a>
   </section>
-    
     <section class="card" style="text-align:center">
       <h3>Installera</h3>
       <p>Lägg till på hemskärmen för offline och app-känsla.</p>
       <button id="installBtn" class="btn">Lägg till på hemskärmen</button>
     </section>
   </main>
-
   <footer><div class="safe">© 2025 WPK2006 — Hosted on GitHub Pages</div></footer>
-
   <script>
     // Registrera service worker (måste ligga i /) för att få rätt scope
     if ('serviceWorker' in navigator) {
@@ -91,7 +85,6 @@
         .then(r => console.log('SW ok:', r.scope))
         .catch(e => console.error('SW fail:', e));
     }
-
     // A2HS (Add to Home Screen)
     let deferredPrompt;
     const installBtn = document.getElementById('installBtn');
