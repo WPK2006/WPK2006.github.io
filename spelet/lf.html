@@ -1,0 +1,95 @@
+
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Luffarschack – Spelkänsla</title>
+  <meta name="description" content="Luffarschack med spelkänsla: animationer, tur-timer, tydliga markörer och tillgänglighet." />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="lf.css" />
+</head>
+<body>
+  <header class="container">
+    <h1>Luffarschack</h1>
+    <p class="sub">Mer spelkänsla – snyggt, responsivt och tillgängligt.</p>
+  </header>
+
+  <main class="container">
+    <section class="panel" aria-labelledby="status-label">
+      <!-- HUD / spelare -->
+      <div class="players">
+        <div class="player" id="pX" aria-live="polite">
+          <div class="avatar x">X</div>
+          <div class="meta">
+            <div class="name">Spelare X</div>
+            <div class="submeta">Poäng: <span id="scoreX">0</span></div>
+          </div>
+        </div>
+        <div class="turn-timer" aria-hidden="true">
+          <div class="bar" id="turnBar"></div>
+        </div>
+        <div class="player" id="pO" aria-live="polite">
+          <div class="avatar o">O</div>
+          <div class="meta">
+            <div class="name">Spelare O</div>
+            <div class="submeta">Poäng: <span id="scoreO">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="status-row">
+        <h2 id="status-label" class="visually-hidden">Spelstatus</h2>
+        <div id="status" role="status" aria-live="polite">Spelare X börjar</div>
+        <div class="pill" id="drawCount">Oavgjort: <span id="scoreD">0</span></div>
+      </div>
+
+      <!-- Bräde -->
+      <div
+        id="board"
+        class="board"
+        role="grid"
+        aria-label="Spelbräde 3 gånger 3"
+        aria-describedby="help"
+      >
+        <!-- 9 rutor -->
+        <button class="cell" role="gridcell" aria-label="Ruta 1 tom" data-index="0"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 2 tom" data-index="1"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 3 tom" data-index="2"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 4 tom" data-index="3"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 5 tom" data-index="4"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 6 tom" data-index="5"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 7 tom" data-index="6"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 8 tom" data-index="7"></button>
+        <button class="cell" role="gridcell" aria-label="Ruta 9 tom" data-index="8"></button>
+
+        <div id="winLine" class="win-line" aria-hidden="true"></div>
+        <canvas id="fx" class="fx" aria-hidden="true"></canvas>
+      </div>
+
+      <div id="help" class="help">
+        Tips: Använd ⇥ Tab för att flytta fokus och Enter/mellanslag för att lägga din markering. Piltangenter flyttar på brädet.
+      </div>
+
+      <div class="controls">
+        <button id="resetBtn" class="btn">Starta ny omgång</button>
+        <button id="clearScoreBtn" class="btn btn-secondary">Nollställ poäng</button>
+        <button id="swapStartBtn" class="btn btn-secondary">Låt förloraren börja</button>
+      </div>
+
+      <div class="moves panel-sub">
+        <div class="moves-head">Draghistorik</div>
+        <ol id="movesList" class="moves-list" aria-live="polite" aria-label="Draghistorik"></ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer">
+    <small>Byggt för spelkänsla, prestanda och tillgänglighet. © <span id="year"></span></small>
+  </footer>
+
+  <script src="lf.js"></script>
+</body>
+</html>
