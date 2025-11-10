@@ -60,12 +60,7 @@ body{
 @media (prefers-color-scheme: dark){
   .btn-ghost{ background:transparent; color:var(--text); }
   .btn-ghost:hover{ background:#1a1b24; border-color:#1f2430; }
-}
-.hero { animation: floaty 25s ease-in-out infinite alternate; }
-@keyframes floaty {
-  0%   { background-position: 0% 0%, 100% 0%, 0% 100%, 100% 100%; }
-  100% { background-position: 10% 5%,  90% 10%,  5% 95%,  95% 90%; }
-}
+
 
 #installBtn{display:none}
 
